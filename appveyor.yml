@@ -7,8 +7,5 @@ build_script:
 - msbuild /t:restore /v:m /nologo
 - msbuild /v:m /nologo
 
-artifacts:
-- path: '**\TestResults.xml'
-
 test_script:
 - msbuild /t:test
