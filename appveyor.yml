@@ -1,2 +1,10 @@
 skip_branch_with_pr: false
-build: off
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+
+artifacts:
+- path: '**\TestResults.xml'
+
+test_script:
+- msbuild /t:test
