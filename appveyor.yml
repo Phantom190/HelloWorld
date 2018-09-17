@@ -3,6 +3,10 @@ image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 
+build_script:
+- msbuild /t:restore /v:m /nologo
+- msbuild /v:m /nologo
+
 artifacts:
 - path: '**\TestResults.xml'
 
