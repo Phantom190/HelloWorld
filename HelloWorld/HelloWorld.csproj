@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net452</TargetFramework>
+    <CodeCovVersion>1.0.5</CodeCovVersion>
+    <OpenCoverVersion>4.6.519</OpenCoverVersion>
+    <NugetPackagesPath>$(USERPROFILE)\.nuget\packages\</NugetPackagesPath>
+    <OpenCoverPath>$(NugetPackagesPath)opencover\$(OpenCoverVersion)\tools\opencover.console.exe</OpenCoverPath>
+    <CodeCovPath>$(NugetPackagesPath)codecov\$(CodeCovVersion)\tools\codecov.exe</CodeCovPath>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+    
+  <ItemGroup>
+    <PackageReference Include="OpenCover" Version="$(OpenCoverVersion)" PrivateAssets="all" />
+    <PackageReference Include="Codecov" Version="$(CodeCovVersion)" PrivateAssets="all" />
+    <PackageReference Include="xunit.runner.console" Version="2.3.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <Target Name="Test">
+    <ItemGroup>
+      <MyAssemblies Include="$(SolutionDir)bin\**\$(Configuration)\$(TargetFramework)\$(AssemblyName)*.tests.dll" />
+    </ItemGroup>
+    <PropertyGroup>
+      <CoverageOutputXmlPath>$(SolutionDir)bin\$(AssemblyName)\Coverage.xml</CoverageOutputXmlPath>
+      <XunitAssemblies>@(MyAssemblies->'%(FullPath)', ' ')</XunitAssemblies>
+    </PropertyGroup>
+
+    <Exec Command='
+"$(OpenCoverPath)" ^
+  -target:"$(XunitConsolePathX86)" ^
+  -targetargs:"$(XunitAssemblies) -stoponfail -noshadow -appveyor -diagnostics" ^
+  -output:"$(CoverageOutputXmlPath)" ^
+  -register:user ^
+  -returntargetcode:9000
+  
+"$(CodeCovPath)" ^
+  -f $(CoverageOutputXmlPath)' />
+  </Target>
+</Project>
